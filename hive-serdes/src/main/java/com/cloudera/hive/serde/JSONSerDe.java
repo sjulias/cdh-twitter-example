@@ -192,7 +192,14 @@ public class JSONSerDe implements SerDe {
     
     List<Object> structRow = new ArrayList<Object>(structTypes.size());
     for (int i = 0; i < structNames.size(); i++) {
-      structRow.add(parseField(map.get(structNames.get(i)), structTypes.get(i)));
+      Object fieldData = map.get(structNames.get(i));
+      // In case the field data is null (i.e., does noot exists in the JSON) we don't try
+      // to parse it, but just add it as null. (case of nested structs)   
+      Object pasredField = null;  
+      if (fieldData != null){
+         pasredField = parseField(fieldData, structTypes.get(i)); 
+      }
+      structRow.add(pasredField);
     }
     return structRow;
   }
